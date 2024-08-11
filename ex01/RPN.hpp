@@ -6,7 +6,7 @@
 /*   By: yokamura <yokamura@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 19:15:55 by yokamura          #+#    #+#             */
-/*   Updated: 2024/08/09 01:40:52 by yokamura         ###   ########.fr       */
+/*   Updated: 2024/08/12 02:00:16 by yokamura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <sstream>
 #include <vector>
 #include <cctype>
+#include <cstdlib>
 
 class	RPN
 {

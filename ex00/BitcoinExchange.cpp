@@ -6,7 +6,7 @@
 /*   By: yokamura <yokamura@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 17:45:38 by yokamura          #+#    #+#             */
-/*   Updated: 2024/08/08 19:14:03 by yokamura         ###   ########.fr       */
+/*   Updated: 2024/08/12 02:09:24 by yokamura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,26 +83,39 @@ static unsigned int getDaysOfMonth(const unsigned int year, const unsigned int m
 
 static void	checkDateFormat(const std::string &str)
 {
-	std::vector<std::string>	tokens;
+	std::string	yearStr, monthStr, dayStr;
 	std::string::size_type	start = 0;
 	std::string::size_type	end = str.find("-");
-	while (end != std::string::npos)
+
+	if (end != std::string::npos)
 	{
-		tokens.push_back(str.substr(start, end - start));
+		yearStr = str.substr(start, end - start);
 		start = end + 1;
 		end = str.find("-", start);
 	}
-	tokens.push_back(str.substr(start));
-	if (tokens.size() != 3)
+	else
 		throw	BitcoinExchange::BadInputException("Error: bad input => " + str);
-	for (size_t i = 0; i < 3; i++)
+
+	if (end != std::string::npos)
 	{
-		if (!isNumber(tokens[i]))
-			throw	BitcoinExchange::InvalidDateException("Error: invalid date at line " + str);
+		monthStr = str.substr(start, end - start);
+		start = end + 1;
+		end = str.find("-", start);
 	}
-	unsigned int year = convertToUint(tokens[0]);
-	unsigned int month = convertToUint(tokens[1]);
-	unsigned int day = convertToUint(tokens[2]);
+	else
+		throw	BitcoinExchange::BadInputException("Error: bad input => " + str);
+
+	if (end == std::string::npos)
+		dayStr = str.substr(start);
+	else
+		throw	BitcoinExchange::BadInputException("Error: bad input => " + str);
+
+	if (!isNumber(yearStr) || !isNumber(monthStr) || !isNumber(dayStr))
+		throw	BitcoinExchange::InvalidDateException("Error: invalid date at line " + str);
+
+	unsigned int year = convertToUint(yearStr);
+	unsigned int month = convertToUint(monthStr);
+	unsigned int day = convertToUint(dayStr);
 	if (2009 > year || year > 9999)
 		throw	BitcoinExchange::InvalidDateException("Error: invalid year at line " + str);
 	if (1 > month || month > 12)

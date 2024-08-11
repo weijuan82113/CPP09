@@ -6,7 +6,7 @@
 /*   By: yokamura <yokamura@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 23:29:08 by yokamura          #+#    #+#             */
-/*   Updated: 2024/08/12 01:16:51 by yokamura         ###   ########.fr       */
+/*   Updated: 2024/08/12 02:01:24 by yokamura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <ctime>
 #include <exception>
 #include <stdexcept>
+#include <climits>
 
 class   PmergeMe
 {
