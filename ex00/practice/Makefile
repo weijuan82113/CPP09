@@ -1,4 +1,4 @@
-NAME = Bitcoin_Exchange
+NAME = practice
 # COMPILE FLAGS
 CXX			=	c++
 CXXFLAGS	=	-Wall -Wextra -Werror -std=c++98
