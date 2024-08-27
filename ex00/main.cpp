@@ -1,4 +1,9 @@
-int main(int arc, char* argv[])
+#include "BitcoinExchange.h"
+
+int main(int argc, char* argv[])
 {
+	
+
+
 	return 0;
 }
