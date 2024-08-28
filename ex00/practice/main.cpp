@@ -5,6 +5,15 @@
 #include <sstream>
 #include <cstdlib> // For std::strtol
 #include <cctype> //For ::isdigit
+#include <map> //For std::map
+
+
+enum DateType
+{
+	kYear = 0,
+	kMonth = 1,
+	kDay = 2
+};
 
 static bool ft_all_of_str(const std::string& str, int (*func)(int c))
 {
@@ -14,14 +23,6 @@ static bool ft_all_of_str(const std::string& str, int (*func)(int c))
 			return false;
 	}
 	return true;
-};
-
-
-enum DateType
-{
-	kYear = 0,
-	kMonth = 1,
-	kDay = 2
 };
 
 static bool isOpen(std::ifstream& fs,const std::string& fp)
@@ -58,12 +59,12 @@ static void printTokens(std::vector<std::string> tokens)
 
 }
 
-bool isLeepYear(const long& year)
+static bool isLeepYear(const long& year)
 {
 	return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
 }
 
-long getDay(const long& year, const long& month)
+static long getDay(const long& year, const long& month)
 {
 	switch(month)
 	{
@@ -89,29 +90,21 @@ long getDay(const long& year, const long& month)
 	}
 }
 
-bool isDay(const std::vector<long>& dates)
-{
-	//check the day is the year & month
-	if (dates[2] != getDay(dates[0], dates[1]))
-		return false;
-	return true;
-}
-
 static bool isDateType(const std::vector<long>& dates,const DateType& type)
 {
 	//out of range
 	switch (type)
 	{
 		case (kYear):
-			if (dates[type] > 9999)
+			if (dates[kYear] > 9999)
 				return false;
 			break;
 		case (kMonth):
-			if (dates[type] > 12)
+			if (dates[kMonth] > 12)
 				return false;
 			break;
 		case (kDay):
-			if (dates[type] > 31 || !isDay(dates))
+			if (dates[kDay] > getDay(dates[kYear], dates[kMonth]))
 				return false;
 			break;
 		default:
@@ -125,18 +118,13 @@ static bool isNumber(const std::string& str)
 	return (!str.empty() && ft_all_of_str(str, ::isdigit));
 }
 
-long covertToLong(const std::string& str_date)
+static long covertToLong(const std::string& str_date)
 {
 	const char *p = str_date.c_str();
 	char* p_end;
 	long long_date = std::strtol(p, &p_end, 10);
-	//not be found in the whole string(exit space)
-
-	std::cout << "p: " << p << std::endl;
-	std::cout << "p_end: " << *p_end << std::endl;
-
-
-	if (p != p_end)
+	//after transfer, remain charactors not transfered
+	if (*p_end != '\0')
 		return 0;
 	return long_date;
 }
@@ -191,6 +179,29 @@ static bool isDate(const std::string& date)
 	return true;
 }
 
+static bool isValue(const std::string& value)
+{
+	std::stringstream ss(value);
+	double result;
+	ss >> result;
+	if(ss.fail() || result < 0)
+	{
+		std::cerr << "Error: cant convert value to positive double" << std::endl;
+        return false;
+	}
+	std::cout << "double: " << result << std::endl;
+	return true;
+}
+
+static double converToDouble(const std::string& str)
+{
+	std::stringstream ss(str);
+	double result;
+	ss >> result;
+	return result;
+}
+
+
 int main(int argc, char* argv[])
 {
 	std::string line;
@@ -202,7 +213,7 @@ int main(int argc, char* argv[])
 		std::cerr << "Error: could not open file." << std::endl;
 		return 1;
 	}
-
+	std::map<std::string, double> database;
 	while (std::getline(istream, line))
 	{
 		//std::cout << line << std::endl;
@@ -218,14 +229,22 @@ int main(int argc, char* argv[])
 			std::cerr << "Error: database's format is wrong." << std::endl;
 			return 1;
 		}
-		//here
 		if (i !=0 && !isDate(tokens[0]))
 		{
 			std::cerr << "Error: date's format is wrong." << std::endl;
 			return 1;
 		}
+		if (i !=0 && !isValue(tokens[1]))
+		{
+			std::cerr << "Error: date's format is wrong." << std::endl;
+			return 1;
+		}
+		database[tokens[0]] = converToDouble(tokens[1]);
 		i++;
 	}
+	std::string find_str = "2009-01-01";
+	std::cout << "database[" << find_str << "]: " << database.find(find_str)->second << std::endl;
+	std::cout << "database.end(): " << database.end()->second << std::endl;
 
 
 	return 0;
