@@ -9,8 +9,10 @@
 #include <cstdlib> // For std::strtol
 #include <cctype> //For ::isdigit
 #include <map> //For std::map
+#include <utility>
+#include <limits>
 
-#define DATABASEPATH "data_bk.csv"
+#define DATABASEPATH "data.csv"
 
 enum DateType
 {
@@ -24,21 +26,38 @@ class BitcoinExchange
 	public:
 		BitcoinExchange();
 		~BitcoinExchange();
+		void inputFile(const std::string& fp);
+		void printData();
 
-		class InvalidDatabaseException : std::invalid_argument
+		class InvalidDatabaseException : public std::invalid_argument
 		{
 			public:
 				InvalidDatabaseException(const std::string& msg);
 		};
-		class RangeErrorDatabaseException : std::range_error
+		class RangeErrorDatabaseException : public std::range_error
 		{
 			public:
 				RangeErrorDatabaseException(const std::string& msg);
 		};
+		class InvalidInputfileException : public std::invalid_argument
+		{
+			public:
+				InvalidInputfileException(const std::string& msg);
+		};
+		class RangeErrorInputfileException : public std::range_error
+		{
+			public:
+				RangeErrorInputfileException(const std::string& msg);
+		};
 	private:
-		std::map<std::string, double> database_;
+		BitcoinExchange(const BitcoinExchange& other);
+		BitcoinExchange& operator=(const BitcoinExchange& other);
 
-		static void loadDatabase(const std::map<std::string, double>& database);
+		std::map<std::string, double> database_;
+		std::vector<std::pair<std::string, double> > data_;
+
+		static void loadDatabase(std::map<std::string, double>& database);
+
 		static bool isOpen(std::ifstream& fs,const std::string& fp);
 		static std::vector<std::string> tokenize(const std::string& str, const std::string& delim);
 		static bool isDate(const std::string& date);
@@ -48,7 +67,9 @@ class BitcoinExchange
 		static bool isDateType(const std::vector<long>& dates,const DateType& type);
 		static long getDay(const long& year, const long& month);
 		static bool isLeapYear(const long& year);
-
+		static bool isValue(const std::string& value);
+		static double convertToDouble(const std::string& str);
+		static void findClosestMatch(const std::vector<std::pair<std::string, double> >::const_iterator& it, std::map<std::string, double> database_);
 
 };
 
