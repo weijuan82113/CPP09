@@ -3,7 +3,19 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <stdlib.h>
+#include <cstdlib> // For std::strtol
+#include <cctype> //For ::isdigit
+
+static bool ft_all_of_str(const std::string& str, int (*func)(int c))
+{
+	for (size_t i = 0; i < str.size(); i++)
+	{
+		if (!func(str[i]))
+			return false;
+	}
+	return true;
+};
+
 
 enum DateType
 {
@@ -12,7 +24,7 @@ enum DateType
 	kDay = 2
 };
 
-static bool canOpen(std::ifstream& fs,const std::string& fp)
+static bool isOpen(std::ifstream& fs,const std::string& fp)
 {
 	fs.open(fp.c_str());
 	if (!fs.is_open())
@@ -46,31 +58,88 @@ static void printTokens(std::vector<std::string> tokens)
 
 }
 
-static bool checkYear(std::string& year_str)
+bool isLeepYear(const long& year)
 {
-	char *c;
-	long year = std::strtol(year_str.c_str(), &c, 10);
-	std::cout << "year: " << year;
+	return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+}
+
+long getDay(const long& year, const long& month)
+{
+	switch(month)
+	{
+		case 1:
+		case 3:
+		case 5:
+		case 7:
+		case 8:
+		case 10:
+		case 12:
+			return 31;
+		case 4:
+		case 6:
+		case 9:
+		case 11:
+			return 30;
+		case 2:
+			if (isLeepYear(year))
+				return 29;
+			return 28;
+		default :
+			return 0;
+	}
+}
+
+bool isDay(const std::vector<long>& dates)
+{
+	//check the day is the year & month
+	if (dates[2] != getDay(dates[0], dates[1]))
+		return false;
 	return true;
 }
 
-
-static bool checkDateType(std::string& date_str, DateType type)
+static bool isDateType(const std::vector<long>& dates,const DateType& type)
 {
+	//out of range
 	switch (type)
 	{
-	case (kYear) :
-		if (!checkYear(date_str))
-			return false;
-		break;
-
-	default:
-		break;
+		case (kYear):
+			if (dates[type] > 9999)
+				return false;
+			break;
+		case (kMonth):
+			if (dates[type] > 12)
+				return false;
+			break;
+		case (kDay):
+			if (dates[type] > 31 || !isDay(dates))
+				return false;
+			break;
+		default:
+			break;
 	}
 	return true;
-
 }
 
+static bool isNumber(const std::string& str)
+{
+	return (!str.empty() && ft_all_of_str(str, ::isdigit));
+}
+
+long covertToLong(const std::string& str_date)
+{
+	const char *p = str_date.c_str();
+	char* p_end;
+	long long_date = std::strtol(p, &p_end, 10);
+	//not be found in the whole string(exit space)
+
+	std::cout << "p: " << p << std::endl;
+	std::cout << "p_end: " << *p_end << std::endl;
+
+
+	if (p != p_end)
+		return 0;
+	return long_date;
+}
 
 static bool isDate(const std::string& date)
 {
@@ -78,25 +147,47 @@ static bool isDate(const std::string& date)
 	size_t start = 0;
 	size_t end = 0;
 
+	//parse date into yyyy,mm,dd tokens
 	while ((end = date.find("-", start)) != std::string::npos)
 	{
 		date_tokens.push_back(date.substr(start, end - start));
 		start = end + 1;
 	}
 	date_tokens.push_back(date.substr(start));
-	//is 3 segment
+	//is 3 tokens
 	printTokens(date_tokens);
 	if (date_tokens.size() != 3)
 	{
-		std::cout << "wrong data format" << std::endl;
+		std::cout << "Error: date's format is wrong." << std::endl;
 		return false;
 	}
-	//from here
-	//isNumber
-	//isNegative
-	//validate yyyy-mm-dd
+	std::vector<long> long_date_tokens;
 	for (size_t i = 0; i < date_tokens.size(); i++)
-		checkDateType(date_tokens[i], static_cast<DateType>(i));
+	{
+		//isNumber
+		if (!isNumber(date_tokens[i]))
+		{
+			std::cout << "Error: date is not number" << std::endl;
+			return false;
+		}
+		//convert string to long
+		long long_date;
+		if ((long_date = covertToLong(date_tokens[i])) == 0)
+		{
+			std::cout << "Error: date cant convert to long" << std::endl;
+			return false;
+		}
+		long_date_tokens.push_back(long_date);
+	}
+	//validate yyyy-mm-dd
+	for (size_t i = 0; i < long_date_tokens.size(); i++)
+	{
+		if (!isDateType(long_date_tokens, static_cast<DateType>(i)))
+		{
+			std::cout << "Error: the date is out of range" << std::endl;
+			return false;
+		}
+	}
 	return true;
 }
 
@@ -106,7 +197,7 @@ int main(int argc, char* argv[])
 	int i = 0;
 	std::ifstream istream;
 
-	if (argc != 2 || !canOpen(istream, argv[1]))
+	if (argc != 2 || !isOpen(istream, argv[1]))
 	{
 		std::cerr << "Error: could not open file." << std::endl;
 		return 1;
@@ -121,19 +212,18 @@ int main(int argc, char* argv[])
 			return 1;
 		}
 		std::vector<std::string> tokens = tokenize(line, ",");
-		printTokens(tokens);
+		//printTokens(tokens);
 		if (tokens.size() != 2)
 		{
 			std::cerr << "Error: database's format is wrong." << std::endl;
 			return 1;
 		}
+		//here
 		if (i !=0 && !isDate(tokens[0]))
 		{
 			std::cerr << "Error: date's format is wrong." << std::endl;
 			return 1;
 		}
-
-
 		i++;
 	}
 
