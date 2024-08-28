@@ -236,7 +236,7 @@ int main(int argc, char* argv[])
 		}
 		if (i !=0 && !isValue(tokens[1]))
 		{
-			std::cerr << "Error: date's format is wrong." << std::endl;
+			std::cerr << "Error: value's format is wrong." << std::endl;
 			return 1;
 		}
 		database[tokens[0]] = converToDouble(tokens[1]);
