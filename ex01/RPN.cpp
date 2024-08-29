@@ -27,7 +27,7 @@ void RPN::tokenizeExpression(const std::string& exp, const std::string& delim, s
 		//validate
 		cut_str = exp.substr(start, end - start);
 		if (!isNum(cut_str) && !isOperator(cut_str))
-			throw (InvalidRpnException("Error: intput value invalidate"));
+			throw (InvalidRpnException("Error"));
 		if (isOperator(cut_str))
 			stck.push(calculateOperator(stck , cut_str));
 		else
@@ -36,7 +36,7 @@ void RPN::tokenizeExpression(const std::string& exp, const std::string& delim, s
 	}
 	cut_str = exp.substr(start);
 	if (!isNum(cut_str) && !isOperator(cut_str))
-		throw (InvalidRpnException("Error: intput value invalidate"));
+		throw (InvalidRpnException("Error"));
 	if (isOperator(cut_str))
 		stck.push(calculateOperator(stck , cut_str));
 	else
