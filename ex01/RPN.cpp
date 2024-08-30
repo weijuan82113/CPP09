@@ -105,7 +105,7 @@ bool RPN::isNum(const std::string& str)
 	ss >> integer;
 	if (ss.fail())
 		return false;
-	if (integer > 9 || integer < 0)
+	if (integer > 9 || integer < -9)
 		return false;
 	return true;
 }
