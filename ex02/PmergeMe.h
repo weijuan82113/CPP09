@@ -5,6 +5,7 @@
 #include <list>
 #include <limits>
 #include <cstdlib>
+#include <algorithm> //for std::swap
 
 class PmergeMe
 {
@@ -14,13 +15,14 @@ class PmergeMe
 
 		//-----utils-----
 		void printList();
+		void printItList(std::list<std::list<int>::iterator>& itList);
 		//-----utils-----
 
 		void validateInputArgument(char** argv);
 		void createContainer(int integer);
-		void mergerInsertList();
-
-
+		void mergerInsertList(size_t size);
+		//here
+		void insertSortedIterator();
 
 
 
@@ -36,5 +38,36 @@ class PmergeMe
 
 
 };
+
+template <typename InputIterator>
+void implAdvance(InputIterator& it,
+ typename std::iterator_traits<InputIterator>::difference_type n,
+ std::input_iterator_tag)
+{
+	while (n > 0)
+	{
+		++it;
+		n--;
+	}
+};
+
+// Main advance function
+template <typename InputIterator, typename Distance>
+void ft_advance(InputIterator& it, Distance n)
+{
+	implAdvance(it, n,
+	 typename std::iterator_traits<InputIterator>::iterator_category());
+}
+
+template <typename Iterator>
+void ft_swap(Iterator it1, Iterator it2, size_t size)
+{
+	for (size_t i = 0; i < size; i ++)
+	{
+		std::swap(*it1, *it2);
+		it1++;
+		it2++;
+	}
+}
 
 #endif
