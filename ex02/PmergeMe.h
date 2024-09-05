@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <algorithm> //for std::swap
 #include <cmath> // for std::pow
+
 class PmergeMe
 {
 	public:
@@ -20,17 +21,23 @@ class PmergeMe
 
 		void validateInputArgument(char** argv);
 		void createContainer(int integer);
-		void mergerInsertList(size_t size);
+		void mergeInsertList(size_t size);
 		void insertSortedList(std::list<int>& temp_sorted_list,
 			std::list<std::list<int>::iterator>& big_it_list,
 			std::list<std::list<int>::iterator>& small_it_list,
 			size_t size);
-		void ft_push_back(std::list<int>& temp_list,
-			std::list<int>::iterator& it,
+		void updateList(std::list<int>& temp_sorted_list);
+		void pushBackList(std::list<int>& temp_list,
+			std::list<int>::iterator it,
 			size_t size);
-		//here
-		void binary_insert();
-
+		void updateSortedIterators(std::list<std::list<int>::iterator>& sorted_its, std::list<int>& temp_list, size_t size);
+		void binaryInsertList(std::list<int>& temp_list,
+			std::list<std::list<int>::iterator>::iterator small_it, size_t size);
+		std::list<int>::iterator& binarySearchList(std::list<std::list<int>::iterator>& it_list,
+			int item, int low, int high);
+		int countPairIndex(std::list<std::list<int>::iterator>& sorted_it_list,
+			std::list<std::list<int>::iterator>::iterator small_it, size_t size);
+		void insertList(std::list<int>& list ,std::list<int>::iterator& pos_it, std::list<int>::iterator insert_it, size_t size);
 
 		class invalidArgumentPmergeMeException : public std::invalid_argument
 		{
@@ -46,14 +53,19 @@ class PmergeMe
 };
 
 template <typename InputIterator>
-void implAdvance(InputIterator& it,
+void impl_advance(InputIterator& it,
  typename std::iterator_traits<InputIterator>::difference_type n,
  std::input_iterator_tag)
 {
-	while (n > 0)
+	if (n > 0)
 	{
-		++it;
-		n--;
+		while (n--)
+			++it;
+	}
+	else
+	{
+		while (n++)
+			--it;
 	}
 };
 
@@ -61,7 +73,7 @@ void implAdvance(InputIterator& it,
 template <typename InputIterator, typename Distance>
 void ft_advance(InputIterator& it, Distance n)
 {
-	implAdvance(it, n,
+	impl_advance(it, n,
 	 typename std::iterator_traits<InputIterator>::iterator_category());
 }
 

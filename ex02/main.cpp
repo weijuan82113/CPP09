@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
 	{
 		PmergeMe p;
 		p.validateInputArgument(++argv);
-		p.mergerInsertList(1);
+		p.mergeInsertList(1);
 
 	}
 	catch(const std::exception& e)
