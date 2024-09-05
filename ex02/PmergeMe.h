@@ -6,7 +6,7 @@
 #include <limits>
 #include <cstdlib>
 #include <algorithm> //for std::swap
-
+#include <cmath> // for std::pow
 class PmergeMe
 {
 	public:

@@ -115,7 +115,15 @@ void PmergeMe::insertSortedList(std::list<int>& temp_sorted_list,
 	if (small_it != small_it_list.end())
 	{
 		//here
-		// binary_insert with jacobsthal_number
+		int jacobsthal_number = 2;
+		int i = 2;
+		while (jacobsthal_number <= small_it_list.size() - 1)
+		{
+			// binary_insert with jacobsthal_number
+
+			jacobsthal_number = std::pow(2, i) - jacobsthal_number;
+			i ++;
+		}
 
 	}
 }
