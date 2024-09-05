@@ -14,16 +14,22 @@ class PmergeMe
 		~PmergeMe();
 
 		//-----utils-----
-		void printList();
+		void printList(std::list<int>& list);
 		void printItList(std::list<std::list<int>::iterator>& itList);
 		//-----utils-----
 
 		void validateInputArgument(char** argv);
 		void createContainer(int integer);
 		void mergerInsertList(size_t size);
+		void insertSortedList(std::list<int>& temp_sorted_list,
+			std::list<std::list<int>::iterator>& big_it_list,
+			std::list<std::list<int>::iterator>& small_it_list,
+			size_t size);
+		void ft_push_back(std::list<int>& temp_list,
+			std::list<int>::iterator& it,
+			size_t size);
 		//here
-		void insertSortedIterator();
-
+		void binary_insert();
 
 
 		class invalidArgumentPmergeMeException : public std::invalid_argument

@@ -2,9 +2,9 @@
 
 //----utils func----
 
-void PmergeMe::printList()
+void PmergeMe::printList(std::list<int>& list)
 {
-	for (std::list<int>::iterator it = list_.begin(); it != list_.end(); it++)
+	for (std::list<int>::iterator it = list.begin(); it != list.end(); it++)
 	{
 		std::cout << *it << "-->";
 	}
@@ -44,7 +44,7 @@ void PmergeMe::validateInputArgument(char** argv)
 		createContainer(static_cast<int>(l));
 	}
 	//utils
-	printList();
+	printList(list_);
 }
 
 
@@ -86,13 +86,50 @@ void PmergeMe::mergerInsertList(size_t size)
 	printItList(big_it_list);
 	std::cout << "small it list: ";
 	printItList(small_it_list);
-	printList();
+	//utils
+	printList(list_);
 	mergerInsertList(size * 2);
-	//here
 	std::list<int> temp_sorted_list;
+	insertSortedList(temp_sorted_list, big_it_list, small_it_list, size);
 
 
 }
+
+
+void PmergeMe::insertSortedList(std::list<int>& temp_sorted_list,
+			std::list<std::list<int>::iterator>& big_it_list,
+			std::list<std::list<int>::iterator>& small_it_list,
+			size_t size)
+{
+	std::list<std::list<int>::iterator>::iterator big_it = big_it_list.begin();
+	std::list<std::list<int>::iterator>::iterator small_it = small_it_list.begin();
+	ft_push_back(temp_sorted_list, *small_it, size);
+	small_it++;
+	while (big_it != big_it_list.end())
+	{
+		ft_push_back(temp_sorted_list, *big_it, size);
+		big_it ++;
+	}
+	std::cout << "temp_sorted_list: " ;
+	printList(temp_sorted_list);
+	if (small_it != small_it_list.end())
+	{
+		//here
+		// binary_insert with jacobsthal_number
+
+	}
+}
+
+void PmergeMe::ft_push_back(std::list<int>& temp_list, std::list<int>::iterator& it, size_t size)
+{
+	for (size_t i = 0; i < size; i ++)
+	{
+		temp_list.push_back(*it);
+		it++;
+	}
+	it--;
+}
+
 
 PmergeMe::invalidArgumentPmergeMeException::invalidArgumentPmergeMeException(const std::string& msg)
 	: std::invalid_argument(msg) {};
