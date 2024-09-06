@@ -33,11 +33,11 @@ class PmergeMe
 		void updateSortedIterators(std::list<std::list<int>::iterator>& sorted_its, std::list<int>& temp_list, size_t size);
 		void binaryInsertList(std::list<int>& temp_list,
 			std::list<std::list<int>::iterator>::iterator small_it, size_t size);
-		std::list<int>::iterator& binarySearchList(std::list<std::list<int>::iterator>& it_list,
+		std::list<std::list<int>::iterator>::iterator binarySearchList(std::list<std::list<int>::iterator>& it_list,
 			int item, int low, int high);
 		int countPairIndex(std::list<std::list<int>::iterator>& sorted_it_list,
 			std::list<std::list<int>::iterator>::iterator small_it, size_t size);
-		void insertList(std::list<int>& list ,std::list<int>::iterator& pos_it, std::list<int>::iterator insert_it, size_t size);
+		void insertList(std::list<int>& list ,std::list<int>::iterator pos_it, std::list<int>::iterator insert_it, size_t size);
 
 		class invalidArgumentPmergeMeException : public std::invalid_argument
 		{

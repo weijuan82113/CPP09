@@ -113,10 +113,11 @@ void PmergeMe::insertSortedList(std::list<int>& temp_sorted_list,
 	std::list<std::list<int>::iterator>::iterator big_it = big_it_list.begin();
 	std::list<std::list<int>::iterator>::iterator small_it = small_it_list.begin();
 	pushBackList(temp_sorted_list, *small_it, size);
-	std::cout << "test\n" << std::endl;
+	std::cout << "------insertSortedList------\n\n\n" << std::endl;
 	std::cout << "small_it: " << **small_it << std::endl;;
 	small_it++;
-	std::cout << "\ntest" << std::endl;
+	if (small_it != small_it_list.end())
+		std::cout << "small_it: " << **small_it << std::endl;;
 
 	while (big_it != big_it_list.end())
 	{
@@ -138,14 +139,15 @@ void PmergeMe::insertSortedList(std::list<int>& temp_sorted_list,
 	size_t i = 2;
 	//kはsmall_it_listからインサート済み個数
 	size_t k = 1;
+	//ここのロジックを見直す
 	while (k < small_it_list.size())
 	{
 		ft_advance(small_it, jacobsthal_number);
-		//std::cout << "small_it" << **small_it << std::endl;
 		for (size_t i = 0; i < jacobsthal_number ; i++)
 		{
 			//jacobsthal_number_groupの最後からbinary-insert
 			small_it--;
+			std::cout << "the small_it to be inserted: " << **small_it << std::endl;
 			binaryInsertList(temp_sorted_list, small_it, size);
 			std::cout << "----after binary sort----\n";
 			std::cout << "temp_sorted_list: " ;
@@ -157,28 +159,61 @@ void PmergeMe::insertSortedList(std::list<int>& temp_sorted_list,
 		ft_advance(small_it, jacobsthal_number);
 
 		jacobsthal_number = std::pow(2, i) - jacobsthal_number;
+		//残るsmall_itがある場合の対処をする
+
+
+		std::cout << "test\n\n" << std::endl;
+
+
+		std::cout << "small_it_list.size(): " << small_it_list.size() << std::endl;
+		std::cout << "k: " << k << std::endl;
+		std::cout << "jacobsthal_number: " << jacobsthal_number << std::endl;
+
+
+		std::cout << "\n\ntest1" << std::endl;
+		//ここがセグフォー
+		if (k + jacobsthal_number > small_it_list.size() && k < small_it_list.size())
+		{
+		std::cout << "\n\ntest2" << std::endl;
+			ft_advance(small_it, small_it_list.size() - k - 1);
+		std::cout << "\n\ntest3" << std::endl;
+			for (; small_it != small_it_list.end(); small_it--)
+			{
+		std::cout << "\n\ntest4" << std::endl;
+				binaryInsertList(temp_sorted_list, small_it, size);
+				std::cout << "----after remain binary sort----\n";
+				std::cout << "temp_sorted_list: " ;
+		std::cout << "\n\ntest5" << std::endl;
+				printList(temp_sorted_list);
+			}
+		std::cout << "\n\ntest6" << std::endl;
+		}
 		k += jacobsthal_number;
 	}
+		std::cout << "\n\ntest7" << std::endl;
+	std::cout << "\n------insertSortedList------\n\n\n" << std::endl;
 }
 
 int PmergeMe::countPairIndex(std::list<std::list<int>::iterator>& sorted_it_list,
 		std::list<std::list<int>::iterator>::iterator small_it, size_t size)
 {
 	int int_size = static_cast<int>(size);
-	//move small_it to pair of big_it
-	ft_advance(*small_it, int_size * (-1));
+
+	//move small_it to the pair of big_it
+	std::list<int>::iterator big_int_it = *small_it;
+	ft_advance(big_int_it, int_size * (-1));
 	size_t i = 0;
 	for (std::list<std::list<int>::iterator>::iterator sorted_it = sorted_it_list.begin();
 		sorted_it != sorted_it_list.end(); sorted_it++)
 	{
-		if (**sorted_it == **small_it)
+		if (**sorted_it == *big_int_it)
 			return i;
 		i++;
 	}
 	return 0;
 }
 
-std::list<int>::iterator& PmergeMe::binarySearchList(std::list<std::list<int>::iterator>& it_list, int item, int low_index, int high_index)
+std::list<std::list<int>::iterator>::iterator PmergeMe::binarySearchList(std::list<std::list<int>::iterator>& it_list, int item, int low_index, int high_index)
 {
 	std::list<std::list<int>::iterator>::iterator it = it_list.begin();
 	std::list<std::list<int>::iterator>::iterator low_it = it;
@@ -190,14 +225,14 @@ std::list<int>::iterator& PmergeMe::binarySearchList(std::list<std::list<int>::i
 	{
 		if (item > **low_it)
 			ft_advance(low_it, 1);
-		return *low_it;
+		return low_it;
 	}
 
 	int mid_index = (low_index + high_index) / 2;
 	std::list<std::list<int>::iterator>::iterator mid_it = it;
 	ft_advance(mid_it, mid_index);
 	if (item == **mid_it)
-		return *mid_it;
+		return mid_it;
 
 	if (item > **mid_it)
 		return binarySearchList(it_list, item, mid_index + 1, high_index);
@@ -205,13 +240,11 @@ std::list<int>::iterator& PmergeMe::binarySearchList(std::list<std::list<int>::i
 	return binarySearchList(it_list, item, low_index, mid_index - 1);
 }
 
-void PmergeMe::insertList(std::list<int>&list ,std::list<int>::iterator& pos,
+void PmergeMe::insertList(std::list<int>&list ,std::list<int>::iterator pos,
 	std::list<int>::iterator insert_it, size_t size)
 {
 	for (size_t i = 0; i < size; i ++)
 	{
-		std::cout << "insert pos: " << *pos << std::endl;
-		std::cout << "insert it: " << *insert_it << std::endl;
 		pos = list.insert(pos, *insert_it);
 		pos++;
 		insert_it++;
@@ -226,9 +259,14 @@ void PmergeMe::binaryInsertList(std::list<int>& temp_list,
 	int pair_index = countPairIndex(sorted_it_list, small_it, size);
 	//pairを見つからなければ、全ソート済みのリストをbinarySearchする
 	if (pair_index == 0)
-		pair_index = sorted_it_list.size();
-	std::list<int>::iterator& insert_pop = binarySearchList(sorted_it_list, **small_it, 0, pair_index);
-	insertList(temp_list, insert_pop, *small_it, size);
+		pair_index = sorted_it_list.size() - 1;
+	std::list<std::list<int>::iterator>::iterator insert_pos_it = binarySearchList(sorted_it_list, **small_it, 0, pair_index);
+	//std::cout << "insert_pos:" << *insert_pos << std::endl;
+	if (insert_pos_it == sorted_it_list.end())
+		insertList(temp_list, temp_list.end(), *small_it, size);
+	else
+		insertList(temp_list, *insert_pos_it, *small_it, size);
+
 }
 
 void PmergeMe::updateSortedIterators(std::list<std::list<int>::iterator>& sorted_its,
