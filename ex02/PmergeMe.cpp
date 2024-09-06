@@ -11,6 +11,15 @@ void PmergeMe::printList(std::list<int>& list)
 	std::cout << "NULL" << std::endl;
 }
 
+void PmergeMe::printList()
+{
+	for (std::list<int>::iterator it = list_.begin(); it != list_.end(); it++)
+	{
+		std::cout << *it << "-->";
+	}
+	std::cout << "NULL" << std::endl;
+}
+
 
 void PmergeMe::printItList(std::list<std::list<int>::iterator>& it_list)
 {
@@ -43,6 +52,7 @@ void PmergeMe::validateInputArgument(char** argv)
 		createContainer(static_cast<int>(l));
 	}
 	//utils
+	std::cout << "Before: ";
 	printList(list_);
 }
 
@@ -83,12 +93,13 @@ void PmergeMe::mergeInsertList(size_t size)
 	// std::cout << "small it list: ";
 	// printItList(small_it_list);
 	// std::cout << "\n\n";
+	
 	mergeInsertList(size * 2);
 	std::list<int> temp_sorted_list;
 	insertSortedList(temp_sorted_list, big_it_list, small_it_list, size);
 	updateList(temp_sorted_list);
 	//utils
-	printList(list_);
+	//printList(list_);
 }
 
 void PmergeMe::updateList(std::list<int>& temp_sorted_list)
@@ -111,7 +122,7 @@ void PmergeMe::insertSortedList(std::list<int>& temp_sorted_list,
 	std::list<std::list<int>::iterator>::iterator small_it = small_it_list.begin();
 	pushBackList(temp_sorted_list, *small_it, size);
 	//utils
-	//std::cout << "------insertSortedList------\n\n\n" << std::endl;
+	// std::cout << "------insertSortedList------\n\n\n" << std::endl;
 	while (big_it != big_it_list.end())
 	{
 		pushBackList(temp_sorted_list, *big_it, size);
@@ -143,7 +154,7 @@ void PmergeMe::insertSortedList(std::list<int>& temp_sorted_list,
 			for (size_t i = 0; i < small_it_list.size() - k; i++)
 			{
 				//utils
-				//std::cout << "the small_it to be inserted: " << **small_it << std::endl;
+				// std::cout << "the small_it to be inserted: " << **small_it << std::endl;
 				binaryInsertList(temp_sorted_list, small_it, size);
 				small_it--;
 				// std::cout << "----after remain binary sort----\n";
@@ -175,7 +186,7 @@ void PmergeMe::insertSortedList(std::list<int>& temp_sorted_list,
 		pow_i ++;
 	}
 	//utils
-	//std::cout << "\n------insertSortedList------\n\n\n" << std::endl;
+	// std::cout << "\n------insertSortedList------\n\n\n" << std::endl;
 }
 
 int PmergeMe::countPairIndex(std::list<std::list<int>::iterator>& sorted_it_list,
@@ -254,7 +265,7 @@ void PmergeMe::binaryInsertList(std::list<int>& temp_list,
 void PmergeMe::updateSortedIterators(std::list<std::list<int>::iterator>& sorted_its,
 	std::list<int>& temp_list, size_t size)
 {
-	for (size_t i = 0; i < temp_list.size() - 1; i = i + size)
+	for (size_t i = 0; i < temp_list.size(); i = i + size)
 	{
 		std::list<int>::iterator it = temp_list.begin();
 		ft_advance(it, i);

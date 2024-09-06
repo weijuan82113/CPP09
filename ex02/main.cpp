@@ -10,6 +10,8 @@ int main(int argc, char* argv[])
 		PmergeMe p;
 		p.validateInputArgument(++argv);
 		p.mergeInsertList(1);
+		std::cout << "After: ";
+		p.printList();
 
 	}
 	catch(const std::exception& e)

@@ -16,6 +16,7 @@ class PmergeMe
 
 		//-----utils-----
 		void printList(std::list<int>& list);
+		void printList();
 		void printItList(std::list<std::list<int>::iterator>& itList);
 		//-----utils-----
 
