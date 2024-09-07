@@ -9,18 +9,16 @@ int main(int argc, char* argv[])
 	{
 		PmergeMe p;
 		p.validateInputArgument(++argv);
-		p.mergeInsertList(1);
-		std::cout << "After: ";
-		p.printList();
-
+		std::cout << "Before: ";p.printList();
+		p.startSortList();
+		p.startSortDeque();
+		std::cout << "After:  ";p.printList();
+		p.printListTime();
+		p.printDequeTime();
 	}
 	catch(const std::exception& e)
 	{
 		std::cerr << e.what() << std::endl;
 	}
-
-
-
-
 	return 0;
 }
