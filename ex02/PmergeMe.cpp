@@ -6,9 +6,9 @@ void PmergeMe::printList()
 {
 	for (std::list<int>::iterator it = list_.begin(); it != list_.end(); it++)
 	{
-		std::cout << *it << "-->";
+		std::cout << *it << " ";
 	}
-	std::cout << "NULL" << std::endl;
+	std::cout << std::endl;
 }
 
 void PmergeMe::printList(std::list<int>& list)
@@ -34,7 +34,7 @@ void PmergeMe::printItList(std::list<std::list<int>::iterator>& it_list)
 void PmergeMe::printListTime()
 {
 	std::cout << "Time to process a range of "
-	<< list_.size() << " elements with std::list : "
+	<< list_.size() << " elements with std::list :  "
 	<< list_time_
 	<< " us" << std::endl;
 }
