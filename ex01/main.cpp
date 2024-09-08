@@ -5,7 +5,7 @@ int main(int argc, char* argv[])
 {
 	if (argc != 2)
 	{
-		std::cerr << "Error: no expresson." << std::endl;
+		std::cerr << "Error: wrong expresson." << std::endl;
 		return 1;
 	}
 	try
