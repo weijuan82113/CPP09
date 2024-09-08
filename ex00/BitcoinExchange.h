@@ -14,6 +14,12 @@
 
 #define DATABASEPATH "data.csv"
 
+struct LastDate {
+    int year;
+    int month;
+	int day;
+};
+
 enum DateType
 {
 	kYear = 0,

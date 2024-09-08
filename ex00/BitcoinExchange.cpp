@@ -99,6 +99,8 @@ void BitcoinExchange::inputFile(const std::string& fp)
 		data_.push_back(temp_pair);
 		i ++;
 	}
+	if (i == 0)
+		throw(InvalidInputfileException ("Error: inputfile is empty."));
 	// std::cout << "------input data------" << std::endl;
 	// printVector(data_);
 	// std::cout << "------input data------\n\n" << std::endl;
@@ -133,14 +135,16 @@ void BitcoinExchange::printData()
 	}
 }
 
-
 //------static util func()------
 void BitcoinExchange::findClosestMatch(const std::vector<std::pair<std::string, double> >::const_iterator& it,
  											std::map<std::string, double> db)
 {
 	std::map<std::string, double>::const_iterator search = db.lower_bound(it->first);
 	if (search == db.begin())
+	{
 		std::cout << "Error: can not find the suitable value in database" << " => " << it->first << std::endl;
+		return ;
+	}
 	//back to previous value
 	search --;
 	std::cout << it->first << " => " << it->second << " = "<< it->second * search->second << std::endl;
